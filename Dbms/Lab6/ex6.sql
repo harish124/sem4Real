@@ -13,8 +13,8 @@ create sequence ordinal_no_seq
     cycle 
     cache 4
     order;
-    
-CREATE OR REPLACE PROCEDURE discountCalc(x_rno IN receipts.rno%TYPE) IS
+
+CREATE OR REPLACE PROCEDURE discountCalc(x_rno IN receipts.rno%TYPE) AS
 
   x_date receipts.dateOfPurchase%type :='19-OCT-2007';
         
@@ -83,7 +83,48 @@ BEGIN
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('Sqlcode:  '||sqlcode||' SqlerrMsg:  '||sqlerrm);
-END;
+END discountCalc;
 /
 
 exec discountCalc(13355);
+
+--######################################################################################################################
+
+--4:Write a stored function to display the customer name who ordered maximum for the
+--given food and flavor.
+
+create or replace function Max_Customer
+  (x_food products.food%type,
+   x_flavour products.flavour%type
+  )
+  return varchar
+
+  IS
+
+  x_cust_fname customers.fname%type;
+  x_cust_lname customers.lname%type;
+
+BEGIN
+
+
+select * into x_cust_fname,x_cust_lname from
+(select c.fname,c.lname from customers c,products p,receipts r,item_list i
+where c.cid=r.cid and r.rno=i.receipt and p.pid=i.item 
+and p.food =x_food and p.flavour = x_flavour 
+group by c.fname,c.lname order by count(i.item) desc) where rownum=1;
+
+DBMS_OUTPUT.PUT_LINE(chr(10)||'Customer Name: '||x_cust_fname||'  '||x_cust_lname);
+
+return concat(concat(x_cust_fname,' '),x_cust_lname);
+
+end Max_Customer;
+/
+
+declare
+  op varchar(50);
+BEGIN
+
+  op:=Max_Customer('&Food','&Flavour');
+
+end;
+/

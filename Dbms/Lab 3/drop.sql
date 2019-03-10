@@ -1,0 +1,11 @@
+drop table item_list;
+drop table receipts;
+drop table customers;
+drop table products;
+drop view Lab3_Query3;
+drop view Lab3_q4;
+drop view Lab3_q6;
+drop view Lab3_q7;
+drop view Lab3_q8;
+drop view Lab3_q8_1;
+drop view Lab3_q11;

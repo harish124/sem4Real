@@ -95,6 +95,8 @@ pageTable *deallocation(int pno,pageTable *pt)
     {
         if(ptr->pno!=pno)
         {
+            preptr=ptr;
+            ptr=ptr->next;
             continue;
         }
         else

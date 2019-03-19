@@ -22,31 +22,21 @@ struct node *newNode(char item[],int type1)
         printf("New file %s has been created\n",temp->name);
     return temp;
 }
-struct node *inorder(struct node *root,char parentDirName[])
+
+int find(struct node* root,char *search)
 {
-    if (root->next!= NULL && strcmp(root->name,parentDirName)!=0)
-    {
-        inorder(root->next,parentDirName);
-        printf("%s ", root->name);
-        if(root->type==1)                   //If its a directory traverse down
-            inorder(root->down,parentDirName);
-    }
-    return root;
-}
-int find(struct node* node,char *key)
-{
-    struct node* temp = node;
+    struct node* temp = root;
     if(temp!=NULL)
     {
-        if(strcmp(temp->name,key)==0)
+        if(strcmp(temp->name,search)==0)
         {
             printf("Found %s\n",temp->name);
             return 1;
         }
         else
         {
-            find(temp->down,key);
-            find(temp->next,key);
+            find(temp->down,search);
+            find(temp->next,search);
         }
     }
     return 0;
@@ -62,18 +52,20 @@ struct node* insert(struct node* root, char fileordir[],char parentDir[],int mod
     else
     {
         struct node *temp = NULL;
-        temp=inorder(root,parentDir);
+        //temp=inorder(root,parentDir);
+        temp=root;
 
         struct node *temp1 = newNode(fileordir,mode);
+
         if(temp->down==NULL && temp->type ==1)
         {
             temp->down = temp1;
-        if(temp1->type == 2)
-        {
-            printf("File %s successfully inserted\n",temp1->name);
-        }
-        else
-            printf("Directory %s successfully inserted\n",temp1->name);
+            if(temp1->type == 2)
+            {
+                printf("File %s successfully inserted\n",temp1->name);
+            }
+            else
+                printf("Directory %s successfully inserted\n",temp1->name);
         }
         else
         {
@@ -110,13 +102,13 @@ int main(){
         getchar();
         printf("Enter parent/sub-directory: ");
         gets(parDir);
-        printf(" Enter the file type (1 for directory and 2 for file): ");
+        printf("Enter the file type (1 for directory and 2 for file): ");
         scanf("%d",&t);
         printf("\nEnter the directory/filename: ");
         getchar();
         gets(fileOrDir);
 
-        insert(root,fileOrDir,parDir,t);
+        root=insert(root,fileOrDir,parDir,t);
         strcpy(child[c],fileOrDir);
         strcpy(parent[p],parDir);
         c++;
@@ -156,4 +148,3 @@ int main(){
 
     return 0;
 }
-//dinesh181199@gmail.com
